@@ -65,7 +65,7 @@ db.sqlite3-journal
 instance/
 .webassets-cache
 
-# Scrapy stuff:
+# Scrapy stuff::q!
 .scrapy
 
 # Sphinx documentation
