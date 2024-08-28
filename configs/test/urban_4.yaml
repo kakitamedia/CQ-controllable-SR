@@ -1,0 +1,17 @@
+test_dataset:
+  dataset:
+    name: image-folder
+    args:
+      root_path: ./load/Urban100
+  wrapper:
+    name: sr-implicit-downsampled
+    args:
+      scale_min: 4
+      scale_max: 4
+  batch_size: 1
+eval_type: div2k-4
+eval_bsize: 150000
+
+data_norm:
+  mean: [0.5, 0.5, 0.5]
+  std: [0.5, 0.5, 0.5]

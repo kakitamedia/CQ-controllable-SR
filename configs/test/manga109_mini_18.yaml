@@ -1,0 +1,17 @@
+test_dataset:
+  dataset:
+    name: image-folder
+    args:
+      root_path: ./load/Manga109
+      first_k: 4
+  wrapper:
+    name: sr-implicit-downsampled
+    args:
+      scale_min: 18
+  batch_size: 1
+eval_type: div2k-4
+eval_bsize: 20000
+
+data_norm:
+  mean: [0.5, 0.5, 0.5]
+  std: [0.5, 0.5, 0.5]
