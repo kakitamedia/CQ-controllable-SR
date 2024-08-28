@@ -164,6 +164,5 @@ cython_debug/
 # Custom for this project
 *.ipynb
 .vscode/
-wandb
 shell/
 configs/work/
