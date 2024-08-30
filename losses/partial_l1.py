@@ -40,6 +40,7 @@ class PartialL1(nn.Module):
 def partial_reconstruction(pred, model, mode, num_pred, length=None):
     bs, q = pred['coef'][0].shape[:2]
     out_dim = model.predictor.out_dim
+    num_pred = num_pred * model.predictor.block_size
 
     preds = []
     for i in range(len(pred['coef'])):
@@ -58,7 +59,6 @@ def partial_reconstruction(pred, model, mode, num_pred, length=None):
         # phase = phase * mask[:, ::2]
 
         decoded = utils.fourier_decoding(coef, freq, phase, rel_coord)
-        # import pdb; pdb.set_trace()
         preds.append(model.decoder({'decoded': decoded}, scale=num_pred)['pred'].view(bs, q, -1))
 
     ret = model.reconstruct_pixels(preds, pred['area'], pred['coord'])
