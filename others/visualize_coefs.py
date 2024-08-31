@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('--data_dir')
     parser.add_argument('--save_dir', default='')
     parser.add_argument('--image_id', type=int, default=0)
-    parser.add_argument('--coord', nargs='+', type=int, default=(750, 265)) # 845, 265
+    parser.add_argument('--coord', nargs='+', type=int, default=(845, 265)) # 845, 265
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--end', type=int, default=256)
 
@@ -85,6 +85,8 @@ def main():
         axs[3].imshow(image)
 
         # plt.tight_layout()
+        save_path = os.path.join(args.save_dir, f'num_pred_{num_pred}')
+        os.makedirs(save_path, exist_ok=True)
         plt.savefig(os.path.join(args.save_dir, f'num_pred_{num_pred}', f'{args.image_id}_plot.png'))
         plt.close()
 
