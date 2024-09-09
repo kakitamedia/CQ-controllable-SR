@@ -33,9 +33,11 @@ def main():
     preds = torch.load(os.path.join(args.data_dir, f'preds_{args.image_id}.pth'))
     print('done.')
 
-    image = Image.open(os.path.join(args.data_dir, f'num_pred_1', f'{args.image_id}.png'))
-    height, width = image.size
-    coord = height * args.coord[0] + args.coord[1]
+    # image = Image.open(os.path.join(args.data_dir, f'num_pred_1', f'{args.image_id}.png'))
+    # height, width = image.size
+    # coord = height * args.coord[0] + args.coord[1]
+
+    height, width = 2048, 1352
 
     x1, y1 = args.coord[0] - crop_size//2, args.coord[1] - crop_size//2
     x2, y2 = args.coord[0] + crop_size//2, args.coord[1] + crop_size//2
@@ -60,11 +62,11 @@ def main():
     mag_R, mag_G, mag_B = mag_R.cpu().numpy(), mag_G.cpu().numpy(), mag_B.cpu().numpy()
 
     for num_pred in tqdm(range(0, freq_x_R.shape[0])):
-        image = Image.open(os.path.join(args.data_dir, f'num_pred_{num_pred}', f'{args.image_id}.png'))
-        image = image.crop((x1, y1, x2, y2))
+        # image = Image.open(os.path.join(args.data_dir, f'num_pred_{num_pred}', f'{args.image_id}.png'))
+        # image = image.crop((x1, y1, x2, y2))
 
-        draw = ImageDraw.Draw(image)
-        draw.rectangle(([(96, 96), (160, 160)]), outline='red')
+        # draw = ImageDraw.Draw(image)
+        # draw.rectangle(([(96, 96), (160, 160)]), outline='red')
 
         fig, axs = plt.subplots(1, 4, tight_layout=True, figsize=(20, 5))
 
@@ -82,7 +84,7 @@ def main():
         axs[2].set_xticks(np.linspace(-1.5, 1.5, 5))
         axs[2].set_yticks(np.linspace(-1.5, 1.5, 5))
 
-        axs[3].imshow(image)
+        # axs[3].imshow(image)
 
         # plt.tight_layout()
         plt.savefig(os.path.join(args.save_dir, f'num_pred_{num_pred}', f'{args.image_id}_plot.png'))

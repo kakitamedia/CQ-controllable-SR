@@ -71,7 +71,7 @@ def main():
         if num_pred > 0:
             axs[0].scatter(freq_x_R[:num_pred], freq_y_R[:num_pred], c=mag_R[:num_pred], vmin=0, vmax=max(mag_R), s=None, cmap='jet')
             axs[1].scatter(freq_x_G[:num_pred], freq_y_G[:num_pred], c=mag_G[:num_pred], vmin=0, vmax=max(mag_G), s=None, cmap='jet')
-            axs[2].scatter(freq_x_B[:num_pred], freq_y_B[:num_pred], c=mag_B[:num_pred], vmin=0, vmax=max(mag_B), s=None, cmap='jet')        
+            axs[2].scatter(freq_x_B[:num_pred], freq_y_B[:num_pred], c=mag_B[:num_pred], vmin=0, vmax=max(mag_B), s=None, cmap='jet')
 
         axs[0].set_xticks(np.linspace(-1.5, 1.5, 5))
         axs[0].set_yticks(np.linspace(-1.5, 1.5, 5))
@@ -87,7 +87,7 @@ def main():
         # plt.tight_layout()
         save_path = os.path.join(args.save_dir, f'num_pred_{num_pred}')
         os.makedirs(save_path, exist_ok=True)
-        plt.savefig(os.path.join(args.save_dir, f'num_pred_{num_pred}', f'{args.image_id}_plot.png'))
+        plt.savefig(os.path.join(save_path, f'{args.image_id}_plot.png'))
         plt.close()
 
     # images = []
