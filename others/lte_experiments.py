@@ -16,7 +16,7 @@ def parse_args():
     parser.add_argument('--data_dir')
     parser.add_argument('--save_dir', default='')
     parser.add_argument('--image_id', type=int, default=0)
-    parser.add_argument('--coord', nargs='+', type=int, default=(1010, 645)) # 845, 265
+    parser.add_argument('--coord', nargs='+', type=int, default=(845, 265)) # 845, 265
     parser.add_argument('--start', type=int, default=0)
     parser.add_argument('--end', type=int, default=256)
 
@@ -35,9 +35,8 @@ def main():
 
     # image = Image.open(os.path.join(args.data_dir, f'num_pred_1', f'{args.image_id}.png'))
     # height, width = image.size
-    # coord = height * args.coord[0] + args.coord[1]
-
     height, width = 2048, 1352
+    coord = height * args.coord[0] + args.coord[1]
 
     x1, y1 = args.coord[0] - crop_size//2, args.coord[1] - crop_size//2
     x2, y2 = args.coord[0] + crop_size//2, args.coord[1] + crop_size//2
@@ -87,7 +86,9 @@ def main():
         # axs[3].imshow(image)
 
         # plt.tight_layout()
-        plt.savefig(os.path.join(args.save_dir, f'num_pred_{num_pred}', f'{args.image_id}_plot.png'))
+        save_dir = os.path.join(args.save_dir, f'num_pred_{num_pred}')
+        os.makedirs(save_dir, exist_ok=True)
+        plt.savefig(os.path.join(save_dir, f'{args.image_id}_plot.png'))
         plt.close()
 
 
