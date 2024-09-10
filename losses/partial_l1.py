@@ -40,7 +40,8 @@ class PartialL1(nn.Module):
 def partial_reconstruction(pred, model, mode, num_pred, length=None):
     bs, q = pred['coef'][0].shape[:2]
     out_dim = model.predictor.out_dim
-    num_pred = num_pred * model.predictor.block_size
+    if hasattr(model.predictor, 'block_size'):
+        num_pred = num_pred * model.predictor.block_size
 
     preds = []
     for i in range(len(pred['coef'])):
