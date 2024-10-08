@@ -40,24 +40,24 @@ class PartialL1(nn.Module):
 def partial_reconstruction(pred, model, mode, num_pred, length=None):
     bs, q = pred['coef'][0].shape[:2]
     out_dim = model.predictor.out_dim
-    if hasattr(model.predictor, 'block_size'):
-        num_pred = num_pred * model.predictor.block_size
+    block_size = getattr(model.predictor, 'block_size', 1)
 
     preds = []
     for i in range(len(pred['coef'])):
         coef, freq = pred['coef'][i].view(bs * q, -1), pred['freq'][i].view(bs * q, -1)
         phase, rel_coord = pred['phase'][i].view(bs * q, -1), pred['rel_coord'][i].view(bs * q, -1)
 
+        fourier = model.predictor.reshape(coef, freq)
+
         if mode == 'random':
             length = torch.randint(num_pred, (bs * q, 1), device=coef.device) + 1
         elif mode == 'specify':
             length = length
         mask = torch.arange(num_pred, device=coef.device).expand(bs * q, num_pred) < length
-        mask = mask.unsqueeze(-1).expand(bs * q, num_pred, 2*out_dim).reshape(bs * q, -1)
+        mask = mask.unsqueeze(-2).expand(bs * q, 2*6*block_size, num_pred)
 
-        coef = coef * mask
-        freq = freq * mask
-        # phase = phase * mask[:, ::2]
+        fourier = fourier * mask
+        coef, freq = model.predictor.unreshape(fourier)
 
         decoded = utils.fourier_decoding(coef, freq, phase, rel_coord)
         preds.append(model.decoder({'decoded': decoded}, scale=num_pred)['pred'].view(bs, q, -1))

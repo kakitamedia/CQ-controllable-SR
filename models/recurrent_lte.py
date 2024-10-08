@@ -14,6 +14,7 @@ class RecurrentLTE(nn.Module):
         self.block_size = block_size
 
         dim = 4 * out_dim * block_size
+        self.dim = dim
 
         self.layer = make(rnn_spec, args={'in_dim': dim, 'out_dim': dim, 'embed_dim': in_dim})
 
@@ -47,11 +48,8 @@ class RecurrentLTE(nn.Module):
         }
 
     def reshape(self, coef, freq):
-        # coef = torch.stack(torch.split(coef, self.num_pred, dim=-1), dim=-1)
-        # freq = torch.stack(torch.split(freq, self.num_pred, dim=-1), dim=-1)
-
-        coef = coef.view(coef.shape[:-1] + (-1, self.num_pred))
-        freq = freq.view(freq.shape[:-1] + (-1, self.num_pred))
+        coef = torch.stack(torch.split(coef, 6*self.block_size, dim=-1), dim=-1)
+        freq = torch.stack(torch.split(freq, 6*self.block_size, dim=-1), dim=-1)
 
         return torch.cat((coef, freq), dim=-2)
 
