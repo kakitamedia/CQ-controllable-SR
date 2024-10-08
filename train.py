@@ -141,7 +141,7 @@ def do_train(model, optimizer, scaler, data_loader):
         for k, v in loss_dict.items():
             if train_loss_dict.get(k) is None:
                 train_loss_dict[k] = utils.Avarager()
-            train_loss_dict[k].add(v)
+            train_loss_dict[k].add(v.item())
 
     return train_loss.item(), {k: v.item() for k, v in train_loss_dict.items()}
 

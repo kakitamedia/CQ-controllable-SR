@@ -47,5 +47,5 @@ class Compose(nn.Module):
         for name, fn in self.fn.items():
             loss, _ = fn(pred, gt)
             total_loss += loss
-            loss_dict[name] = loss.item()
+            loss_dict[name] = loss
         return total_loss, loss_dict
