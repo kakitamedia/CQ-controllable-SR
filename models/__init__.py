@@ -5,3 +5,6 @@ from . import liif, lte, recurrent_lte
 from . import edsr
 from . import accumulators
 from . import miscs
+from . import rdn
+from . import swinir
+from . import rcan
