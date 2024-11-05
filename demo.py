@@ -88,7 +88,8 @@ def test():
         for j in range(recon.shape[0]):
             recon[j] = utils.discretize(recon[j])
         for j in range(recon.shape[0]):
-            save_imgs(recon[j], os.path.join(args.save_dir, f'pred_{str(i).zfill(4)}.png'))
+            # save_imgs(recon[j], os.path.join(args.save_dir, f'pred_{str(i).zfill(4)}.png'))
+            save_imgs(recon[j], os.path.join(args.save_dir, filename))
 
 
 def main():

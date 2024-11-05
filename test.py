@@ -56,8 +56,8 @@ def test():
     if num_gpus > 1:
         model = nn.DataParallel(model, device_ids=list(range(num_gpus)))
 
-    psnr, lpips = do_test(model, data_loader, save_dir=save_path, batch_size=config.get('eval_bsize'))
-    print(f'PSNR: {psnr}, LPIPS: {lpips}')
+    psnr, lpips, inference_time = do_test(model, data_loader, save_dir=save_path, batch_size=config.get('eval_bsize'))
+    print(f'PSNR: {psnr}, LPIPS: {lpips}, Inference Time: {inference_time}')
 
     # output results to the txt file
     with open(os.path.join(save_path, 'results.txt'), 'w') as f:
@@ -68,6 +68,8 @@ def do_test(model, data_loader, save_dir=None, batch_size=None, validation=False
 
     psnr = utils.Avarager()
     lpips = utils.Avarager()
+    inference_time = utils.Avarager()
+    timer = utils.Timer()
     if not validation:
         lpips_net = LPIPS(net='alex').cuda()
 
@@ -75,12 +77,13 @@ def do_test(model, data_loader, save_dir=None, batch_size=None, validation=False
         inputs = {k: v.cuda() for k, v in inputs.items()}
         targets = {k: v.cuda() for k, v in targets.items()}
 
-        # with torch.inference_mode():
+        timer.s()
         with torch.no_grad():
             if batch_size is None:
                 preds = model(inputs)
             else:
                 preds = batched_predict(model, inputs, batch_size)
+        inference_time.add(timer.t())
         # # TODO: for debugging. remove it later
         # if config['test_dataset']['dataset']['args'].get('channel_flip'):
         #     preds['recon'] = torch.flip(preds['recon'], dims=[-1])
@@ -127,7 +130,7 @@ def do_test(model, data_loader, save_dir=None, batch_size=None, validation=False
                     save = {k: v for k, v in preds.items()}
                     torch.save(save, os.path.join(save_dir, f'preds_{i}.pth'))
 
-    return psnr.item(), lpips.item()
+    return psnr.item(), lpips.item(), inference_time.item()
 
 def batched_predict(model, inputs, batch_size):
     with torch.no_grad():
