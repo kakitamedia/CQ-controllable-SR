@@ -91,7 +91,7 @@ def train():
         if (args.eval_step is not None) and (epoch % args.eval_step == 0):
             log('Validating...')
             model.eval()
-            val_result, _ = do_test(model, data_loader['val'], validation=True)
+            val_result, _, _ = do_test(model, data_loader['val'], validation=True)
 
             log_info.append(f'val: psnr={val_result:.4f}')
 
