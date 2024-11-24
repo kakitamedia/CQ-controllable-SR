@@ -172,7 +172,8 @@ def _get_patches_generic(img, patch_size, is_train, stride):
 
 
     img = img.astype(np.float32)
-    img2 = scipy.misc.imresize(img, 0.5, interp='bicubic', mode='F')
+    # img2 = scipy.misc.imresize(img, 0.5, interp='bicubic', mode='F')
+    img2 = np.array(Image.fromarray(img, mode='F').resize((int(w/2), int(h/2)), resample=Image.BICUBIC))
 
     mscn1, var, mu = compute_image_mscn_transform(img)
     mscn1 = mscn1.astype(np.float32)
