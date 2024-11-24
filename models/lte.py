@@ -30,3 +30,15 @@ class LTE(nn.Module):
             'freq': freq,
             'phase': phase,
         }
+
+    def reshape(self, coef, freq):
+        coef = torch.stack(torch.split(coef, 6, dim=-1), dim=-1)
+        freq = torch.stack(torch.split(freq, 6, dim=-1), dim=-1)
+
+        return torch.cat((coef, freq), dim=-2)
+
+    def unreshape(self, fourier):
+        coef, freq = torch.split(fourier, fourier.shape[-2] // 2, dim=-2)
+        coef = torch.stack(torch.split(coef, 1, dim=-2), dim=-1).view(coef.shape[:-2] + (-1,))
+        freq = torch.stack(torch.split(freq, 1, dim=-2), dim=-1).view(freq.shape[:-2] + (-1,))
+        return coef, freq
