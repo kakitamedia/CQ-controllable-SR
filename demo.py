@@ -29,6 +29,7 @@ def parse_args():
     parser.add_argument('--num_pred', type=int, default=None)
     parser.add_argument('--scale_factors', type=str, default='4.0', help='comma-separated scale factors')
     parser.add_argument('--batch_size', type=int, default=300000)
+    parser.add_argument('--save_fourier', action='store_true', help='save fourier features to the save_dir')
 
     return parser.parse_args()
 
@@ -90,6 +91,9 @@ def test():
         for j in range(recon.shape[0]):
             # save_imgs(recon[j], os.path.join(args.save_dir, f'pred_{str(i).zfill(4)}.png'))
             save_imgs(recon[j], os.path.join(args.save_dir, filename))
+            if args.save_fourier:
+                save = {k: v for k, v in preds.items()}
+                torch.save(save, os.path.join(args.save_dir, f'preds_{i}.pth'))
 
 
 def main():

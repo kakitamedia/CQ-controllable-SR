@@ -28,6 +28,7 @@ def parse_args():
     parser.add_argument('--model', type=str, default='')
     parser.add_argument('--num_pred', type=int, default=None)
     parser.add_argument('--save_img', action='store_true', help='save images to the save_dir')
+    parser.add_argument('--save_fourier', action='store_true', help='save fourier features to the save_dir')
 
     return parser.parse_args()
 
@@ -127,8 +128,9 @@ def do_test(model, data_loader, save_dir=None, batch_size=None, validation=False
                     save_imgs(preds['recon'][j], os.path.join(save_dir, f'pred_{str(i).zfill(4)}_{res.item():.2f}.png'))
                     # needed = ['coef', 'freq', 'phase']
                     # save = {k: v for k, v in preds.items() if k in needed}
-                    save = {k: v for k, v in preds.items()}
-                    torch.save(save, os.path.join(save_dir, f'preds_{i}.pth'))
+                    if args.save_fourier:
+                        save = {k: v for k, v in preds.items()}
+                        torch.save(save, os.path.join(save_dir, f'preds_{i}.pth'))
 
     return psnr.item(), lpips.item(), inference_time.item()
 
