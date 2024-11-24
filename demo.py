@@ -93,7 +93,7 @@ def test():
             save_imgs(recon[j], os.path.join(args.save_dir, filename))
             if args.save_fourier:
                 save = {k: v for k, v in preds.items()}
-                torch.save(save, os.path.join(args.save_dir, f'preds_{i}.pth'))
+                torch.save(save, os.path.join(args.save_dir, f'{os.path.splitext(filename)[0]}.pth'))
 
 
 def main():
