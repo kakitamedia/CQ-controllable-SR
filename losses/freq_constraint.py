@@ -41,4 +41,4 @@ class CosSimilarityLoss(nn.Module):
             freq = freq / freq.norm(dim=-2, keepdim=True)
             loss = torch.matmul(freq.transpose(-2, -1), freq).mean()
             loss_dict = {'loss': loss.item()}
-            return loss, loss_dict
+            return -loss, loss_dict
