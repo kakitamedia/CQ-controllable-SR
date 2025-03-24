@@ -39,6 +39,7 @@ class CosSimilarityLoss(nn.Module):
             freq = einops.rearrange(freq, '... (l xy) t -> ... l xy t', xy=2)
             freq = torch.stack(torch.split(freq, 3, dim=-3), dim=-1).permute(0, 1, 2, 4, 3, 5)
             freq = freq / freq.norm(dim=-2, keepdim=True)
-            loss = torch.matmul(freq.transpose(-2, -1), freq).mean()
+            loss = torch.matmul(freq.transpose(-2, -1), freq)
+            loss = torch.abs(loss).mean()
             loss_dict = {'loss': loss.item()}
             return -loss, loss_dict
