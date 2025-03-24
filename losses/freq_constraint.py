@@ -21,6 +21,7 @@ class PeriodicityLoss(nn.Module):
 
             freq = torch.stack(torch.split(freq, 6*self.block_size, dim=-1), dim=-1)
             repeated = freq[:, ]
+
 @register('cos_similarity')
 class CosSimilarityLoss(nn.Module):
     def __init__(self, weight=1.0, **kwargs):
@@ -42,4 +43,4 @@ class CosSimilarityLoss(nn.Module):
             loss = torch.matmul(freq.transpose(-2, -1), freq)
             loss = torch.abs(loss).mean()
             loss_dict = {'loss': loss.item()}
-            return -loss, loss_dict
+            return -loss * self.weight, loss_dict
