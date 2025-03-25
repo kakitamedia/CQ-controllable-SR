@@ -5,11 +5,12 @@ from losses import register, make
 
 @register('fourier-gan')
 class FourierGANLoss(nn.Module):
-    def __init__(self, weight=1.0, **kwargs):
+    def __init__(self, weight=1.0, log_key='fourier_gan', **kwargs):
         super().__init__()
 
         self.loss_fn = make(kwargs['loss_fn'])
         self.weight = weight
+        self.log_key = log_key
         self.model = kwargs['model']
 
         dim = self.model.predictor.out_dim * self.model.predictor.num_pred * 4
@@ -39,7 +40,7 @@ class FourierGANLoss(nn.Module):
             gt_fourier = self.model.predictor.reshape(gt_pred['coef'][i], gt_pred['freq'][i]).view(bs, q, -1)
             loss += self.loss_fn(self.discriminator(pred_fourier), self.discriminator(gt_fourier))
 
-        loss_dict = {'loss': loss.item()}
+        loss_dict = {self.log_key: loss}
 
         return loss * self.weight, loss_dict
 

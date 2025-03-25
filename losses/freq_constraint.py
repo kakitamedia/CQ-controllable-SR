@@ -24,14 +24,16 @@ class PeriodicityLoss(nn.Module):
 
 @register('cos_similarity')
 class CosSimilarityLoss(nn.Module):
-    def __init__(self, weight=1.0, **kwargs):
+    def __init__(self, weight=1.0, log_key='cos_similarity', **kwargs):
         super().__init__()
 
         self.fn = nn.CosineSimilarity(dim=-1)
         self.weight = weight
+        self.log_key = log_key
         self.block_size = getattr(kwargs['model'].predictor, 'block_size', 1)
         assert self.block_size > 1, 'block_size must be greater than 1'
         self.out_dim = kwargs['model'].predictor.out_dim
+
 
     def forward(self, pred, gt):
         bs, q = pred['freq'][0].shape[:2]
@@ -45,5 +47,5 @@ class CosSimilarityLoss(nn.Module):
             loss = torch.abs(loss).mean()
             total_loss += loss
         total_loss = total_loss / len(pred['freq']) 
-        loss_dict = {'loss': total_loss.item()}
+        loss_dict = {self.log_key: loss}
         return -total_loss * self.weight, loss_dict

@@ -8,11 +8,12 @@ from models.recurrent_lte import RecurrentLTE
 
 @register('partial-l1')
 class PartialL1(nn.Module):
-    def __init__(self, weight=1.0, **kwargs):
+    def __init__(self, weight=1.0, log_key='partial_l1', **kwargs):
         super().__init__()
 
         self.fn = nn.L1Loss()
         self.weight = weight
+        self.log_key = log_key
         # self.target_key = kwargs['target_key']
 
         self.model = kwargs['model']
@@ -33,7 +34,7 @@ class PartialL1(nn.Module):
             raise ValueError('Invalid mode. Please specify either "random" or "specify".')
 
         loss = self.fn(ret, gt['gt_rgb'])
-        loss_dict = {'loss': loss.item()}
+        loss_dict = {self.log_key: loss}
 
         return loss * self.weight, loss_dict
 

@@ -35,11 +35,11 @@ class Compose(nn.Module):
     def __init__(self, *args):
         super().__init__()
 
-        self.fn = {}
+        self.fn = []
         for arg in args:
-            self.fn[arg['name']] = make(arg)
+            self.fn.append(make(arg))
 
-        self.fn = nn.ModuleDict(self.fn)
+        self.fn = nn.ModuleList(self.fn)
 
     def forward(self, pred, gt):
         total_loss = 0

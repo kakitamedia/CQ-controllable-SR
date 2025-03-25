@@ -12,7 +12,7 @@ from utils import normalize
 
 @register('lpips')
 class LPIPSLoss(nn.Module):
-    def __init__(self, weight=1.0, **kwargs):
+    def __init__(self, weight=1.0, log_key='lpips', **kwargs):
         super().__init__()
 
         self.fn = LPIPS(net='alex')
@@ -20,19 +20,20 @@ class LPIPSLoss(nn.Module):
             param.requires_grad = False
 
         self.weight = weight
+        self.log_key = log_key
 
     def forward(self, pred, gt):
         height = width = int(math.sqrt(pred['recon'].shape[-2]))
         x = pred['recon'].view(-1, 3, height, width)
         y = gt['gt_rgb'].view(-1, 3, height, width)
         loss = self.fn(x, y).mean()
-        loss_dict = {'loss': loss.item()}
+        loss_dict = {self.log_key: loss}
         return loss * self.weight, loss_dict
 
 @register('partial-lpips')
 class PartialLPIPSLoss(LPIPSLoss):
-    def __init__(self, weight=1.0, **kwargs):
-        super().__init__(weight=weight)
+    def __init__(self, weight=1.0, log_key='partial_lpips', **kwargs):
+        super().__init__(weight=weight, log_key=log_key, **kwargs)
 
         self.model = kwargs['model']
         self.mode = kwargs['mode']
