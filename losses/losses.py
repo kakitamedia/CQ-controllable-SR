@@ -43,9 +43,9 @@ class Compose(nn.Module):
 
     def forward(self, pred, gt):
         total_loss = 0
-        loss_dict = {}
-        for name, fn in self.fn.items():
-            loss, _ = fn(pred, gt)
+        all_loss_dict = {}
+        for fn in self.fn:
+            loss, loss_dict = fn(pred, gt)
             total_loss += loss
-            loss_dict[name] = loss
-        return total_loss, loss_dict
+            all_loss_dict.update(loss_dict)
+        return total_loss, all_loss_dict
