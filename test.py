@@ -85,11 +85,6 @@ def do_test(model, data_loader, save_dir=None, batch_size=None, validation=False
             else:
                 preds = batched_predict(model, inputs, batch_size)
         inference_time.add(timer.t())
-        # # TODO: for debugging. remove it later
-        # if config['test_dataset']['dataset']['args'].get('channel_flip'):
-        #     preds['recon'] = torch.flip(preds['recon'], dims=[-1])
-        #     targets['gt_img'] = torch.flip(targets['gt_img'], dims=[-1])
-        #     targets['gt_rgb'] = torch.flip(targets['gt_rgb'], dims=[-1])
 
         if validation:
             preds['recon'] = utils.denormalize(preds['recon']).clamp_(0, 1)

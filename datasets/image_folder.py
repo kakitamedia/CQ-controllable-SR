@@ -12,13 +12,11 @@ from torchvision import transforms
 from datasets import register
 import utils
 
-#TODO: channel_flip is for debugging. remove it later
 @register('image-folder')
 class ImageFolder(Dataset):
-    def __init__(self, root_path, cache='none', split_file=None, split_key=None, first_k=None, repeat=1, channel_flip=False):
+    def __init__(self, root_path, cache='none', split_file=None, split_key=None, first_k=None, repeat=1):
         self.cache = cache
         self.repeat = repeat
-        self.channel_flip = channel_flip
 
         if split_file is None:
             filenames = sorted(os.listdir(root_path))
@@ -76,9 +74,6 @@ class ImageFolder(Dataset):
         # if the cache is 'none', load the image from the file
         elif self.cache == 'none':
             x = transforms.ToTensor()(Image.open(x).convert('RGB'))
-
-        if self.channel_flip:
-            x = x[[2, 1, 0]]
 
         return x
 
