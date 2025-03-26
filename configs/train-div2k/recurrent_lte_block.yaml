@@ -1,0 +1,91 @@
+train_dataset:
+  dataset:
+    name: image-folder
+    args:
+      root_path: ./load/div2k/DIV2K_train_HR
+      repeat: 20
+      cache: in_memory
+  wrapper:
+    name: sr-implicit-downsampled
+    args:
+      inp_size: 48
+      scale_max: 4
+      augment: true
+      sample_q: 128
+  augmenter:
+    name: compose
+    args:
+      - name: h_flip
+        args: {}
+      - name: v_flip
+        args: {}
+      - name: rot
+        args: {}
+  batch_size: 16
+
+val_dataset:
+  dataset:
+    name: image-folder
+    args:
+      root_path: ./load/div2k/DIV2K_valid_HR_mini
+      first_k: 1
+      repeat: 160
+      cache: in_memory
+  wrapper:
+    name: sr-implicit-downsampled
+    args:
+      inp_size: 48
+      scale_max: 4
+      sample_q: 128
+  batch_size: 16
+
+data_norm:
+  mean: [0.5, 0.5, 0.5]
+  std: [0.5, 0.5, 0.5]
+
+model:
+  name: liif-base
+  args:
+    encoder_spec:
+      name: swinir
+      args:
+        no_upsampling: true
+    predictor_spec:
+      name: recurrent-lte
+      args:
+        num_pred: 64
+        out_dim: 3
+        block_size: 2
+        rnn_spec:
+          name: recurrent-transformer
+          args:
+            pos_encoding: 'stochastic-position-encoding'
+    decoder_spec:
+      name: accumulator
+      args:
+        out_dim: 3
+        scaling: False
+
+loss:
+  name: compose
+  args:
+  - name: partial-l1
+    args:
+      target_key: gt_rgb
+      mode: random
+      weight: 1.0
+  - name: cos_similarity
+    args:
+      weight: 0.001
+
+optimizer:
+  name: adam
+  args:
+    lr: 1.e-4
+epoch_max: 400
+multi_step_lr:
+  milestones: [200, 400, 600, 800]
+  gamma: 0.5
+
+amp: False
+SEED: 123
